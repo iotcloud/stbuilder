@@ -1,0 +1,27 @@
+{
+  "topology": {
+    "spouts": [
+      {
+        "id": "word",
+        "spout": "org.sample.storm.SampleSpout",
+        "parallelism": 3
+      }
+    ],
+    "bolts": [
+      {
+        "id": "split",
+        "bolt": "org.sample.storm.SplitBolt",
+        "parallelism": 5
+      },
+      {
+        "id": "count",
+        "bolt": "org.sample.storm.CountBolt",
+        "parallelism": 4,
+        "declarer": {
+          "grouping": "shuffle",
+          "componentId": "word"
+        }
+      }
+    ]
+  }
+}

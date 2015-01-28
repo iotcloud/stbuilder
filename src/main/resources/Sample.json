@@ -1,0 +1,34 @@
+{
+  "topology": {
+    "spouts": [
+      {
+        "id": "spout",
+        "spout": "cgl.iotcloud.wordCount.RandomSentenceSpout",
+        "parallelism": 6
+      }
+    ],
+    "bolts": [
+      {
+        "id": "split",
+        "bolt": "cgl.iotcloud.wordCount.SplitSentenceBolt",
+        "parallelism": 8,
+        "declarer": {
+          "grouping": "SHUFFLE",
+          "componentId": "spout"
+        }
+      },
+      {
+        "id": "count",
+        "bolt": "cgl.iotcloud.wordCount.WordCountBolt",
+        "parallelism": 4,
+        "declarer": {
+          "grouping": "FIELDS",
+          "componentId": "split",
+          "fields": [
+            "word"
+          ]
+        }
+      }
+    ]
+  }
+}
