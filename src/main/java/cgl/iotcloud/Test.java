@@ -1,3 +1,4 @@
+/*
 package cgl.iotcloud;
 
 import backtype.storm.generated.StormTopology;
@@ -16,9 +17,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+*/
 /**
  * Created by shameera on 1/22/15.
- */
+ *//*
+
 public class Test implements IConfigParser{
     JsonReader jsonReader;
     TopologyBuilder builder;
@@ -138,3 +141,4 @@ public class Test implements IConfigParser{
     }
 
 }
+*/
