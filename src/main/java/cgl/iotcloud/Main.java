@@ -7,6 +7,8 @@ import backtype.storm.utils.Utils;
 import cgl.iotcloud.config.JsonConfigParser;
 import cgl.iotcloud.config.StormConfig;
 import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileReader;
@@ -19,9 +21,29 @@ public class Main {
 
 
     public static void main(String[] args) throws Exception {
-//        MyParser myParser = new MyParser();
-//        myParser.parse();
-        Gson gson = new Gson();
+        Logger log = LoggerFactory.getLogger(Main.class);
+        JsonConfigParser jsonConfigParser;
+        if (args.length > 0) {
+            jsonConfigParser = new JsonConfigParser(args[0]);
+        } else {
+            log.info("No command line argument found, hence use default configuration file");
+            File jsonFile = new File("src/main/resources/Sample.json");
+            jsonConfigParser = new JsonConfigParser(jsonFile.getAbsolutePath());
+//            jsonConfigParser = new JsonConfigParser(Main.class.getResourceAsStream("/src/main/resources/Sample.json"));
+        }
+        StormTopology topology = jsonConfigParser.parse();
+        Config config = new Config();
+        config.setNumWorkers(2);
+        config.setDebug(true);
+
+        LocalCluster localCluster = new LocalCluster();
+        localCluster.submitTopology("test", config, topology);
+        Utils.sleep(10000);
+        localCluster.shutdown();
+
+    }
+}
+
 
       /*  StormConfig stormConfig = new StormConfig();
         TopologyConfig topologyConfig = new TopologyConfig();
@@ -44,20 +66,6 @@ public class Main {
         stormConfig.setTopology(topologyConfig);
         System.out.println(gson.toJson(stormConfig));*/
 
-        FileReader reader = new FileReader(new File("/Users/shameera/work/source/stbuilder/src/main/resources/Sample.json"));
+/*        FileReader reader = new FileReader(new File("/Users/shameera/work/source/stbuilder/src/main/resources/Sample.json"));
         StormConfig stormConfig = gson.fromJson(reader, StormConfig.class);
-        System.out.println(stormConfig.getTopology().getBolts().get(1).getId());
-
-      JsonConfigParser jsonConfigParser = new JsonConfigParser("/Users/shameera/work/source/stbuilder/src/main/resources/Sample.json");
-      StormTopology topology = jsonConfigParser.parse();
-      Config config = new Config();
-      config.setNumWorkers(2);
-      config.setDebug(true);
-
-      LocalCluster localCluster = new LocalCluster();
-      localCluster.submitTopology("test", config, topology);
-      Utils.sleep(10000);
-      localCluster.shutdown();
-
-    }
-}
+        System.out.println(stormConfig.getTopology().getBolts().get(1).getId());*/

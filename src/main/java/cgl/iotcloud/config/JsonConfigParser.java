@@ -7,18 +7,15 @@ import backtype.storm.topology.IRichSpout;
 import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.tuple.Fields;
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import org.mortbay.util.ajax.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-
-import static cgl.iotcloud.config.Grouping.*;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 /**
  * Created by shameera on 1/23/15.
@@ -27,18 +24,26 @@ public class JsonConfigParser implements IConfigParser {
 
     private static final Logger log = LoggerFactory.getLogger(JsonConfigParser.class);
 
-    private File jsonFile;
+    private final Reader jsonConfigReader;
 
-    public JsonConfigParser(String jsonFilePath) {
-        jsonFile = new File(jsonFilePath);
+    public JsonConfigParser(String jsonFilePath) throws FileNotFoundException {
+        jsonConfigReader = new FileReader(new File(jsonFilePath));
+    }
+
+    public JsonConfigParser(InputStream jsonInputStream) {
+        if (jsonInputStream == null) {
+            throw new IllegalArgumentException("Input stream should not be NULL");
+        }
+        jsonConfigReader = new InputStreamReader(jsonInputStream);
     }
 
     @Override
     public StormTopology parse() throws Exception {
         Gson gson = new Gson();
-        StormConfig stormConfig = gson.fromJson(new FileReader(jsonFile), StormConfig.class);
+        StormConfig stormConfig = gson.fromJson(jsonConfigReader, StormConfig.class);
         if (stormConfig != null) {
             TopologyBuilder builder = new TopologyBuilder();
+            // load all spout configuration and set it to the builder
             IRichSpout spoutObj = null;
             for (SpoutConfig spout : stormConfig.getTopology().getSpouts()) {
                 Class spoutClazz = Class.forName(spout.getSpout());
@@ -48,10 +53,11 @@ public class JsonConfigParser implements IConfigParser {
                 }
                 if (spoutObj == null) {
                     log.error(spout.getSpout() + " is not an IRichSpout implementation");
+                    continue;
                 }
                 builder.setSpout(spout.getId(), spoutObj, spout.getParallelism());
             }
-
+            // load all bolt configurations and set it to the builder.
             IRichBolt boltObj = null;
             for (BoltConfig boltConfig : stormConfig.getTopology().getBolts()) {
                 Class boltClazz = Class.forName(boltConfig.getBolt());
@@ -61,8 +67,8 @@ public class JsonConfigParser implements IConfigParser {
                 }
                 if (boltObj == null) {
                     log.error(boltConfig.getBolt() + " is not an IRichBolt implementation");
+                    continue;
                 }
-
                 BoltDeclarer declarer = builder.setBolt(boltConfig.getId(), boltObj, boltConfig.getParallelism());
                 DeclarerConfig declarerConfig = boltConfig.getDeclarer();
                 if (declarerConfig != null) {
@@ -84,14 +90,14 @@ public class JsonConfigParser implements IConfigParser {
                             }
                             break;
                         default:
-                            log.info("Other grouping is not yet implemented");
+                            log.info("Only SHUFFLE and FIELDS groupings are supported, others are not yet implemented");
                             break;
                     }
                 }
             }
-
             return builder.createTopology();
         }
+        log.warn("Couldn't crate storm topology as Storm config is NULL");
         return null;
     }
 }
