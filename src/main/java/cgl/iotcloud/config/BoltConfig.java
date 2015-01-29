@@ -7,7 +7,7 @@ import java.util.List;
  */
 public class BoltConfig {
     private String id;
-    private String bolt;
+    private String boltClass;
     private int parallelism;
     private List<DeclarerConfig> declarers;
 
@@ -22,12 +22,12 @@ public class BoltConfig {
         this.id = id;
     }
 
-    public String getBolt() {
-        return bolt;
+    public String getBoltClass() {
+        return boltClass;
     }
 
-    public void setBolt(String bolt) {
-        this.bolt = bolt;
+    public void setBoltClass(String boltClass) {
+        this.boltClass = boltClass;
     }
 
     public int getParallelism() {

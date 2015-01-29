@@ -6,12 +6,12 @@ package cgl.iotcloud.config;
 public class SpoutConfig {
 
     private String id;
-    private String spout;
+    private String spoutClass;
     private int parallelism;
 
-    public SpoutConfig(String id, String spout, int parallelism) {
+    public SpoutConfig(String id, String spoutClass, int parallelism) {
         this.id = id;
-        this.spout = spout;
+        this.spoutClass = spoutClass;
         this.parallelism = parallelism;
     }
 
@@ -27,12 +27,12 @@ public class SpoutConfig {
         this.id = id;
     }
 
-    public String getSpout() {
-        return spout;
+    public String getSpoutClass() {
+        return spoutClass;
     }
 
-    public void setSpout(String spout) {
-        this.spout = spout;
+    public void setSpoutClass(String spoutClass) {
+        this.spoutClass = spoutClass;
     }
 
     public int getParallelism() {

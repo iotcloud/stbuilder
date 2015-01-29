@@ -1,0 +1,117 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "StBuilder Configuration schema",
+  "description": "StBuilder json configuration schema",
+  "type": "object",
+  "properties": {
+    "topology": {
+      "type": "object",
+      "description": "",
+      "properties": {
+        "spouts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/spout"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "bolts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/bolt"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "spouts",
+        "bolts"
+      ]
+    }
+  },
+  "required": [
+    "topology"
+  ],
+  "definitions": {
+    "spout": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "spoutClass": {
+          "type": "string"
+        },
+        "parallelism": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "spoutClass"
+      ]
+    },
+    "bolt": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "boltClass": {
+          "type": "string"
+        },
+        "parallelism": {
+          "type": "number"
+        },
+        "declarers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/declarer"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "boltClass"
+      ]
+    },
+    "declarer": {
+      "type": "object",
+      "properties": {
+        "grouping": {
+          "type": "string",
+          "enum": [
+            "SHUFFLE",
+            "FIELDS",
+            "ALL",
+            "GLOBAL",
+            "DIRECT",
+            "NONE",
+            "LOCAL"
+          ]
+        },
+        "componentId": {
+          "type": "string"
+        },
+        "streamId": {
+          "type": "string"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "configurations": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "grouping",
+        "componentId"
+      ]
+    }
+  }
+}

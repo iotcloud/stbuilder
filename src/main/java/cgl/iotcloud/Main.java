@@ -46,12 +46,12 @@ public class Main {
         SpoutConfig spoutConfig = new SpoutConfig();
         spoutConfig.setId("word");
         spoutConfig.setParallelism(6);
-        spoutConfig.setSpout("org.sample.spout");
+        spoutConfig.setSpoutClass("org.sample.spout");
 
         BoltConfig boltConfig = new BoltConfig();
         boltConfig.setId("split");
         boltConfig.setParallelism(8);
-        boltConfig.setBolt("org.sample.bolt");
+        boltConfig.setBoltClass("org.sample.bolt");
 
         List<SpoutConfig> spouts = new ArrayList<SpoutConfig>();
         spouts.add(spoutConfig);
