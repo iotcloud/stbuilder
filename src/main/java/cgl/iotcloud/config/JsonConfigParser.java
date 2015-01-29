@@ -112,8 +112,10 @@ public class JsonConfigParser implements IConfigParser {
                     }
                 }
             }
+            jsonConfigReader.close();
             return builder.createTopology();
         }
+        jsonConfigReader.close();
         log.warn("Couldn't crate storm topology as Storm config is NULL");
         return null;
     }
