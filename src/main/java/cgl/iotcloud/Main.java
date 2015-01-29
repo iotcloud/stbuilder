@@ -5,14 +5,10 @@ import backtype.storm.LocalCluster;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.utils.Utils;
 import cgl.iotcloud.config.JsonConfigParser;
-import cgl.iotcloud.config.StormConfig;
-import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
 
 /**
  * Created by shameera on 1/25/15.

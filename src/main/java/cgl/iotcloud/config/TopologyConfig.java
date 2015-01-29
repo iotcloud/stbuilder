@@ -7,8 +7,8 @@ import java.util.List;
  * Created by shameera on 1/23/15.
  */
 public class TopologyConfig {
-    private List<SpoutConfig> spouts = new ArrayList<SpoutConfig>();
-    private List<BoltConfig> bolts = new ArrayList<BoltConfig>();
+    private List<SpoutConfig> spouts;
+    private List<BoltConfig> bolts;
 
 
     public List<BoltConfig> getBolts() {

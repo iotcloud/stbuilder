@@ -16,6 +16,7 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.List;
 
 /**
  * Created by shameera on 1/23/15.
@@ -70,28 +71,30 @@ public class JsonConfigParser implements IConfigParser {
                     continue;
                 }
                 BoltDeclarer declarer = builder.setBolt(boltConfig.getId(), boltObj, boltConfig.getParallelism());
-                DeclarerConfig declarerConfig = boltConfig.getDeclarer();
-                if (declarerConfig != null) {
-                    switch (declarerConfig.getGrouping()) {
-                        case SHUFFLE:
-                            if (declarerConfig.getStreamId() != null) {
-                                declarer.shuffleGrouping(declarerConfig.getComponentId(), declarerConfig.getStreamId());
-                            } else {
-                                declarer.shuffleGrouping(declarerConfig.getComponentId());
-                            }
-                            break;
-                        case FIELDS:
-                            if (declarerConfig.getStreamId() != null) {
-                                declarer.fieldsGrouping(declarerConfig.getComponentId(),
-                                        declarerConfig.getStreamId(), new Fields(declarerConfig.getFields()));
-                            } else {
-                                declarer.fieldsGrouping(declarerConfig.getComponentId(),
-                                        new Fields(declarerConfig.getFields()));
-                            }
-                            break;
-                        default:
-                            log.info("Only SHUFFLE and FIELDS groupings are supported, others are not yet implemented");
-                            break;
+                List<DeclarerConfig> declarerConfigList = boltConfig.getDeclarers();
+                if (declarerConfigList != null) {
+                    for (DeclarerConfig declarerConfig : declarerConfigList) {
+                        switch (declarerConfig.getGrouping()) {
+                            case SHUFFLE:
+                                if (declarerConfig.getStreamId() != null) {
+                                    declarer.shuffleGrouping(declarerConfig.getComponentId(), declarerConfig.getStreamId());
+                                } else {
+                                    declarer.shuffleGrouping(declarerConfig.getComponentId());
+                                }
+                                break;
+                            case FIELDS:
+                                if (declarerConfig.getStreamId() != null) {
+                                    declarer.fieldsGrouping(declarerConfig.getComponentId(),
+                                            declarerConfig.getStreamId(), new Fields(declarerConfig.getFields()));
+                                } else {
+                                    declarer.fieldsGrouping(declarerConfig.getComponentId(),
+                                            new Fields(declarerConfig.getFields()));
+                                }
+                                break;
+                            default:
+                                log.info("Only SHUFFLE and FIELDS groupings are supported, others are not yet implemented");
+                                break;
+                        }
                     }
                 }
             }

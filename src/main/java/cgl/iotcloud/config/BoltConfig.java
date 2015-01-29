@@ -1,5 +1,7 @@
 package cgl.iotcloud.config;
 
+import java.util.List;
+
 /**
  * Created by shameera on 1/23/15.
  */
@@ -7,7 +9,7 @@ public class BoltConfig {
     private String id;
     private String bolt;
     private int parallelism;
-    private DeclarerConfig declarer;
+    private List<DeclarerConfig> declarers;
 
     public BoltConfig() {
     }
@@ -36,11 +38,11 @@ public class BoltConfig {
         this.parallelism = parallelism;
     }
 
-    public DeclarerConfig getDeclarer() {
-        return declarer;
+    public List<DeclarerConfig> getDeclarers() {
+        return declarers;
     }
 
-    public void setDeclarer(DeclarerConfig declarer) {
-        this.declarer = declarer;
+    public void setDeclarers(List<DeclarerConfig> declarers) {
+        this.declarers = declarers;
     }
 }
